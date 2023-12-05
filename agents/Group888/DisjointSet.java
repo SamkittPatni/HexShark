@@ -9,8 +9,29 @@ public class DisjointSet {
     private int rows;
     private int columns;
     private int setNumber;
-    
+
     // RedTop = 1000, RedBottom = 1001, BlueLeft = 1002, BlueRight = 1003
+    public DisjointSet(DisjointSet set) {
+        this.sets = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : set.sets.entrySet()) {
+            // No need to create new instances for Integer keys and values
+            this.sets.put(entry.getKey(), entry.getValue());
+        }
+        this.rank = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : set.rank.entrySet()) {
+            // No need to create new instances for Integer keys and values
+            this.rank.put(entry.getKey(), entry.getValue());
+        }
+        this.valueToKeys = new HashMap<>();
+        for (Map.Entry<Integer, Integer> entry : set.valueToKeys.entrySet()) {
+            // No need to create new instances for Integer keys and values
+            this.valueToKeys.put(entry.getKey(), entry.getValue());
+        }
+        this.rows = set.rows;
+        this.columns = set.columns;
+        this.setNumber = set.setNumber;
+    }
+
     public DisjointSet(int rows, int coloums) {
         this.sets = new HashMap<>();
         this.rank = new HashMap<>();
@@ -35,6 +56,10 @@ public class DisjointSet {
             uniqueSets.add(root);
         }
         return new ArrayList<>(uniqueSets);
+    }
+
+    public int size() {
+        return sets.size();
     }
 
     public void add(int x, int y) {
@@ -74,7 +99,16 @@ public class DisjointSet {
 
     }
 
+    public void remove(int x, int y) {
+        valueToKeys.put(find((x * columns) + y), valueToKeys.get(find((x * columns) + y)) - 1);
+        sets.remove((x * columns) + y);
+        rank.remove((x * columns) + y);
+    }
+
     public int find(int x) {
+        if (sets.get(x) == null) {
+            return -1;
+        }
         if (sets.get(x) != x) {
             sets.put(x, find(sets.get(x)));
         }
@@ -100,23 +134,25 @@ public class DisjointSet {
         }
     }
 
-    public static void main(String[] args) {
-        DisjointSet moves = new DisjointSet(11, 11);
+    // public static void main(String[] args) {
+    //     DisjointSet moves = new DisjointSet(11, 11);
 
-        moves.add(0,2);
-        System.out.println(moves.setCount());
-        System.out.println(moves.getAllSets());
-        System.out.println(moves.setSize(2));
+    //     moves.add(0,2);
+    //     System.out.println(moves.setCount());
+    //     System.out.println(moves.getAllSets());
+    //     System.out.println(moves.setSize(2));
 
-        moves.add(0,3);
-        System.out.println(moves.setCount());
-        System.out.println(moves.getAllSets());
-        System.out.println(moves.setSize(3));
+    //     moves.add(0,3);
+    //     System.out.println(moves.setCount());
+    //     System.out.println(moves.getAllSets());
+    //     System.out.println(moves.setSize(3));
 
-        moves.add(3,3);
-        System.out.println(moves.setCount());
-        System.out.println(moves.getAllSets());
-        System.out.println(moves.setSize(36));
+    //     moves.add(3,3);
+    //     System.out.println(moves.setCount());
+    //     System.out.println(moves.getAllSets());
+    //     System.out.println(moves.setSize(36));
 
-    }
+    //     System.out.println("Test: " + moves.find(300));
+
+    // }
 }
