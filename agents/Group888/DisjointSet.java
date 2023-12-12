@@ -1,50 +1,48 @@
-package COMP34111_p86963sp.agents.Group888;
-
 import java.util.*;
 
 public class DisjointSet {
-    private Map<Integer, Integer> sets;
-    private Map<Integer, Integer> rank;
-    private Map<Integer, Integer> valueToKeys;
-    private int rows;
-    private int columns;
+
+    private final Map<Integer, Integer> sets;
+    private final Map<Integer, Integer> rank;
+    private final Map<Integer, Integer> valueToKeys;
+    private final int rows;
+    private final int columns;
     private int setNumber;
 
-    // RedTop = 1000, RedBottom = 1001, BlueLeft = 1002, BlueRight = 1003
     public DisjointSet(DisjointSet set) {
+
         this.sets = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : set.sets.entrySet()) {
-            // No need to create new instances for Integer keys and values
-            this.sets.put(entry.getKey(), entry.getValue());
-        }
+        this.sets.putAll(set.sets);
+
         this.rank = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : set.rank.entrySet()) {
-            // No need to create new instances for Integer keys and values
-            this.rank.put(entry.getKey(), entry.getValue());
-        }
+        this.rank.putAll(set.rank);
+
         this.valueToKeys = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : set.valueToKeys.entrySet()) {
-            // No need to create new instances for Integer keys and values
-            this.valueToKeys.put(entry.getKey(), entry.getValue());
-        }
+        this.valueToKeys.putAll(set.valueToKeys);
+
         this.rows = set.rows;
         this.columns = set.columns;
         this.setNumber = set.setNumber;
+
     }
 
-    public DisjointSet(int rows, int coloums) {
+    public DisjointSet(int rows, int columns) {
+
         this.sets = new HashMap<>();
         this.rank = new HashMap<>();
         this.valueToKeys = new HashMap<>();
+
         this.rows = rows;
-        this.columns = coloums;
+        this.columns = columns;
         this.setNumber = 0;
+
     }
 
     public int setCount() {
         return setNumber;
     }
 
+    // Set size of set
     public int setSize(int set) {
         return valueToKeys.get(set);
     }
@@ -58,101 +56,95 @@ public class DisjointSet {
         return new ArrayList<>(uniqueSets);
     }
 
+    // Checks if a coordinate exists in set
+    public boolean hasPoint(Point point) { return sets.containsKey(point.toKey(columns)); }
+
+    // Obtains set of keys in set
+    public Set<Integer> getKeys() {
+        return sets.keySet();
+    }
+
+    // Returns size of set
     public int size() {
         return sets.size();
     }
 
-    public void add(int x, int y) {
-        int element = (x * columns) + y;
-        if (!sets.containsKey(element)) {
-            sets.put(element, element);
-            rank.put(element, 0);
-            valueToKeys.put(element, 1);
+    // Adds an element to the set
+    public void add(Point point) {
+
+        int key = point.toKey(columns);
+        
+        if (!hasPoint(point)) {
+            sets.put(key, key);
+            rank.put(key, 0);
+            valueToKeys.put(key, 1);
             setNumber++;
         }
 
-        // (x-1,y) (x+1,y), (x,y-1), (x,y+1), (x-1,y+1), (x+1,y-1)
+        // Check neighbours to determine whether there is a connection
+        ArrayList<Point> neighbours = point.getNeighbours(columns);
+        for (Point neighbour : neighbours) {
 
-        if (x-1 >= 0 && sets.containsKey(((x-1)*columns)+y)) {
-            union(element, ((x-1)*columns)+y);
+            // If there is a connection, combine the sets together
+            if (hasPoint(neighbour)) {
+                union(key, neighbour.toKey(columns));
+            }
         }
-
-        if (x+1 < rows && sets.containsKey(((x+1)*columns)+y)) {
-            union(element, ((x+1)*columns)+y);
-        }
-
-        if (y-1 >= 0 && sets.containsKey(((x)*columns)+y-1)) {
-            union(element, ((x)*columns)+y-1);
-        }
-
-        if (y+1 < columns && sets.containsKey(((x)*columns)+y+1)) {
-            union(element, ((x)*columns)+y+1);
-        }
-
-        if (x-1 >= 0 && y+1 < columns && sets.containsKey(((x-1)*columns)+y+1)) {
-            union(element, ((x-1)*columns)+y+1);
-        }
-
-        if (x+1 < rows && y-1 >= 0 && sets.containsKey(((x+1)*columns)+y-1)) {
-            union(element, ((x+1)*columns)+y-1);
-        }
-
     }
 
-    public void remove(int x, int y) {
-        valueToKeys.put(find((x * columns) + y), valueToKeys.get(find((x * columns) + y)) - 1);
-        sets.remove((x * columns) + y);
-        rank.remove((x * columns) + y);
+    // Remove element from set
+    public void remove(Point point){
+        
+        int key = point.toKey(columns);
+        
+        valueToKeys.put(find(key), valueToKeys.get(find(key)) - 1);
+        sets.remove(key);
+        rank.remove(key);
+        
     }
 
     public int find(int x) {
+
         if (sets.get(x) == null) {
             return -1;
         }
+
         if (sets.get(x) != x) {
             sets.put(x, find(sets.get(x)));
         }
+
         return sets.get(x);
+
     }
 
-    public void union(int x, int y) {
-        int rootX = find(x);
-        int rootY = find(y);
+    // Calculates the union between two sets by their key
+    public void union(int keyA, int keyB) {
+
+        int rootX = find(keyA);
+        int rootY = find(keyB);
+
         if (rootX != rootY) {
+
             if (rank.get(rootX) < rank.get(rootY)) {
+
                 sets.put(rootX, rootY);
                 valueToKeys.put(rootY, valueToKeys.get(rootX) + valueToKeys.get(rootY));
+
             } else if (rank.get(rootX) > rank.get(rootY)) {
+
                 sets.put(rootY, rootX);
                 valueToKeys.put(rootX, valueToKeys.get(rootX) + valueToKeys.get(rootY));
+
             } else {
+
                 sets.put(rootY, rootX);
                 rank.put(rootX, rank.get(rootX) + 1);
                 valueToKeys.put(rootX, valueToKeys.get(rootX) + valueToKeys.get(rootY));
+
             }
+
             setNumber--;
+
         }
     }
-
-    // public static void main(String[] args) {
-    //     DisjointSet moves = new DisjointSet(11, 11);
-
-    //     moves.add(0,2);
-    //     System.out.println(moves.setCount());
-    //     System.out.println(moves.getAllSets());
-    //     System.out.println(moves.setSize(2));
-
-    //     moves.add(0,3);
-    //     System.out.println(moves.setCount());
-    //     System.out.println(moves.getAllSets());
-    //     System.out.println(moves.setSize(3));
-
-    //     moves.add(3,3);
-    //     System.out.println(moves.setCount());
-    //     System.out.println(moves.getAllSets());
-    //     System.out.println(moves.setSize(36));
-
-    //     System.out.println("Test: " + moves.find(300));
-
-    // }
 }
