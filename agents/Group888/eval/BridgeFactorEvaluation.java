@@ -12,15 +12,13 @@ public class BridgeFactorEvaluation extends Evaluation {
     }
 
     // Determines whether a spot is available or not
-    private boolean isBridgeValid(Point point) {
-
-        boolean notOccupied = !maximising.hasPoint(point) && !minimising.hasPoint(point);
-        return point.isValid(0, boardSize) && notOccupied;
+    private boolean isBridgeOwnedByPlayer(DisjointSet pointsOwnedByPlayer, Point point) {
+        return point.isValid(0, boardSize) && pointsOwnedByPlayer.hasPoint(point);
 
     }
 
     // Obtains all bridges that are valid from a position
-    private ArrayList<Point> getValidBridges(Point point) {
+    private ArrayList<Point> getBridgesOwnedByPlayer(DisjointSet pointsOwnedByPlayer, Point point) {
 
         int x = point.x();
         int y = point.y();
@@ -36,11 +34,10 @@ public class BridgeFactorEvaluation extends Evaluation {
                 )
         );
         
-        bridgePositions.removeIf(bridgePosition -> !isBridgeValid(bridgePosition));
+        bridgePositions.removeIf(bridgePosition -> !isBridgeOwnedByPlayer(pointsOwnedByPlayer, bridgePosition));
         return bridgePositions;
 
     }
-
 
     // Obtains a score based on the amount of possible bridges that can be made
     public int getEvaluation() {
@@ -49,12 +46,12 @@ public class BridgeFactorEvaluation extends Evaluation {
 
         for (int key : maximising.getKeys()) {
             Point position = keyToPoint(key);
-            eval += getValidBridges(position).size();
+            eval += getBridgesOwnedByPlayer(maximising, position).size();
         }
 
         for (int key : minimising.getKeys()) {
             Point position = keyToPoint(key);
-            eval -= getValidBridges(position).size();
+            eval -= getBridgesOwnedByPlayer(minimising, position).size();
         }
 
         return eval;

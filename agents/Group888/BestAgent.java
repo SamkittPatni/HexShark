@@ -154,7 +154,7 @@ public class BestAgent {
 
             if (choice[0] != -1) { r.add(new Point(choice[0], choice[1])); }
             if (checkWinCondition(r, b)) { return Integer.MAX_VALUE; }
-            if (r.size() + r.size() == boardSize*boardSize) { return getEvaluationScore(r, b); }
+            if (r.size() + r.size() == boardSize * boardSize) { return getEvaluationScore(r, b); }
 
             int[] newMove;
             alpha = Integer.MIN_VALUE;
