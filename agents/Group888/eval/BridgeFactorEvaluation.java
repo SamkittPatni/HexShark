@@ -1,20 +1,15 @@
+package eval;
+
+import dtypes.DisjointSet;
+import dtypes.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BridgeFactorHeuristic {
+public class BridgeFactorEvaluation extends Evaluation {
 
-    private final DisjointSet maximising;
-    private final DisjointSet minimising;
-    private final int boardSize;
-
-    public BridgeFactorHeuristic(DisjointSet maximising, DisjointSet minimising, int boardSize) {
-        
-        this.maximising = maximising;
-        this.minimising = minimising;
-        this.boardSize = boardSize;
-        
+    public BridgeFactorEvaluation(DisjointSet maximising, DisjointSet minimising, int boardSize) {
+        super(maximising, minimising, boardSize);
     }
-
 
     // Determines whether a spot is available or not
     private boolean isBridgeValid(Point point) {
@@ -23,15 +18,6 @@ public class BridgeFactorHeuristic {
         return point.isValid(0, boardSize) && notOccupied;
 
     }
-
-    private Point keyToPoint(int key) {
-
-        int x = key % boardSize;
-        int y = (key - x) / boardSize;
-
-        return new Point(x, y);
-    }
-
 
     // Obtains all bridges that are valid from a position
     private ArrayList<Point> getValidBridges(Point point) {

@@ -1,3 +1,5 @@
+package dtypes;
+
 import java.util.*;
 
 public class DisjointSet {

@@ -1,3 +1,7 @@
+import dtypes.DisjointSet;
+import dtypes.Point;
+import eval.BridgeFactorEvaluation;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,13 +42,13 @@ public class BestAgent {
 
     }
 
-    private String getMessage() throws IOException {
-        return in.readLine();
-    }
+    private String getMessage() throws IOException { return in.readLine(); }
 
     private void sendMessage(String msg) {
+
         out.print(msg);
         out.flush();
+
     }
 
     private void closeConnection() throws IOException {
@@ -145,6 +149,7 @@ public class BestAgent {
 
         if (choice[0] == -1) { isMaximizingPlayer = !isMaximizingPlayer; }
 
+        // If it's the red players turn
         if (isMaximizingPlayer) {
 
             if (choice[0] != -1) { r.add(new Point(choice[0], choice[1])); }
@@ -181,7 +186,10 @@ public class BestAgent {
 
             return alpha;
 
-        } else {
+        }
+
+        // If it's the blue player's turn
+        else {
 
             if (choice[0] != -1) { b.add(new Point(choice[0], choice[1])); }
             if (checkWinCondition(r, b)) { return Integer.MIN_VALUE; }
@@ -343,7 +351,7 @@ public class BestAgent {
             }
 
             // Setting depth to 1 for testing
-            int depth = 4;
+            int depth = 3;
 
             // Sets base alpha value
             float alpha = Integer.MIN_VALUE;
@@ -413,8 +421,8 @@ public class BestAgent {
     // TODO: Add more heuristics to this function
     public float getEvaluationScore(DisjointSet red, DisjointSet blue) {
 
-        BridgeFactorHeuristic bridgeFactorHeuristic = new BridgeFactorHeuristic(red, blue, boardSize);
-        return bridgeFactorHeuristic.getEvaluation();
+        BridgeFactorEvaluation bridgeFactorEvaluation = new BridgeFactorEvaluation(red, blue, boardSize);
+        return bridgeFactorEvaluation.getEvaluation();
 
     }
 }
