@@ -151,16 +151,19 @@ public class BestAgent {
             else { b.add(choice); }
         }
 
+        if (checkWinCondition(r, b)) {
+            if (isMaximizingPlayer) { return Integer.MAX_VALUE; }
+            else { return Integer.MIN_VALUE; }
+        }
+
         if (depth == 0) {
 
             // Return evaluation score once moves have been played
-            if (checkWinCondition(r, b)) { return Integer.MAX_VALUE; }
             return getEvaluationScore(r, b);
 
         }
 
         // Check if move is not a special move (that ends the game/swaps)
-        if (checkWinCondition(r, b)) { return Integer.MAX_VALUE; }
         if (r.size() + b.size() == boardSize * boardSize) { return getEvaluationScore(r, b); }
 
         Point newMove;
@@ -171,6 +174,7 @@ public class BestAgent {
         if (isFirstMove && !swapped && isMaximizingPlayer) {
 
             newMove = SWAP;
+            isFirstMove = false;
 
             // Obtain an evaluation, when the minimizing player makes a swap
             float score = minimax(depth - 1, false, newMove, r, b, alpha, beta);
@@ -374,8 +378,8 @@ public class BestAgent {
 
             String msg = bestMove.x() + "," + bestMove.y() + "\n";
 
-//            // If swap is best move, set it to that
-//            if (Objects.equals(bestMove, SWAP)) { msg = "SWAP\n"; }
+            // If swap is best move, set it to that
+            if (Objects.equals(bestMove, SWAP)) { msg = "SWAP\n"; }
 
             // Make move
             sendMessage(msg);
