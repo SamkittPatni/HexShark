@@ -41,6 +41,6 @@ public class Evaluation {
      * Obtains an evaluation of the board using the evaluation metric
      * @return an evaluation score
      */
-    protected int getEvaluation() { return 0; }
+    protected float getEvaluation() { return 0; }
 
 }

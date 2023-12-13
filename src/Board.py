@@ -125,7 +125,13 @@ class Board:
                 output += leading_spaces
                 leading_spaces += " "
                 for tile in line:
-                    output += Colour.get_char(tile.get_colour()) + " "
+                    char_code = Colour.get_char(tile.get_colour())
+                    if char_code == "R":
+                        output += f"\033[38;2;255;0;0m{char_code}\033[0m "
+                    elif char_code == "B":
+                        output += f"\033[38;2;0;0;255m{char_code}\033[0m "
+                    else:
+                        output += "0 "
                 output += "\n"
 
         return output

@@ -50,12 +50,36 @@ public class DisjointSet {
     }
 
     public List<Integer> getAllSets() {
+
         Set<Integer> uniqueSets = new HashSet<>();
+
         for (int key : sets.keySet()) {
             int root = find(key);
             uniqueSets.add(root);
         }
+
         return new ArrayList<>(uniqueSets);
+    }
+
+    public ArrayList<ArrayList<Integer>> getAllElements() {
+
+        ArrayList<ArrayList<Integer>> allElements = new ArrayList<>();
+
+        for (int key : getAllSets()) {
+            ArrayList<Integer> connectedPoints = new ArrayList<>();
+
+            for (Map.Entry<Integer, Integer> keyValuePair : sets.entrySet()) {
+                if (Objects.equals(key, keyValuePair.getValue())) {
+                    connectedPoints.add(keyValuePair.getKey());
+                }
+            }
+
+            allElements.add(connectedPoints);
+
+        }
+
+        return allElements;
+
     }
 
     // Checks if a coordinate exists in set

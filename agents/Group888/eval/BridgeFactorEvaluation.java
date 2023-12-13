@@ -40,9 +40,9 @@ public class BridgeFactorEvaluation extends Evaluation {
     }
 
     // Obtains a score based on the amount of possible bridges that can be made
-    public int getEvaluation() {
+    public float getEvaluation() {
 
-        int eval = 0;
+        float eval = 0;
 
         for (int key : maximising.getKeys()) {
             Point position = keyToPoint(key);
