@@ -52,7 +52,9 @@ public class DistanceEvaluation extends Evaluation {
             int cost = currentNode.cost();
             Point currentPoint = currentNode.point();
 
-            if (visited.contains(currentPoint)) { continue; }
+            if (visited.contains(currentPoint)) {
+                continue;
+            }
             visited.add(currentPoint);
 
             if (Objects.equals(currentPoint, end)) { return cost; }
@@ -62,7 +64,7 @@ public class DistanceEvaluation extends Evaluation {
             for (Point neighbour : neighbours) {
 
                 if (isMaximising) {
-                    if (!minimising.hasPoint(neighbour)) {
+                    if (!minimising.hasPoint(neighbour) && !Objects.equals(neighbour, end)) {
                         if (maximising.hasPoint(neighbour)) {
                             heap.offer(new Node(cost, neighbour));
                         }
@@ -70,10 +72,13 @@ public class DistanceEvaluation extends Evaluation {
                             heap.offer(new Node(cost + 1, neighbour));
                         }
                     }
+                    if (Objects.equals(neighbour, end)) {
+                        heap.offer(new Node(cost + 1, neighbour));
+                    }
                 }
 
                 else {
-                    if (!maximising.hasPoint(neighbour)) {
+                    if (!maximising.hasPoint(neighbour) && !Objects.equals(neighbour, end)) {
                         if (minimising.hasPoint(neighbour)) {
                             heap.offer(new Node(cost, neighbour));
                         }
@@ -81,7 +86,13 @@ public class DistanceEvaluation extends Evaluation {
                             heap.offer(new Node(cost + 1, neighbour));
                         }
                     }
+                    if (Objects.equals(neighbour, end)) {
+                        heap.offer(new Node(cost + 1, neighbour));
+                    }
                 }
+            }
+            if (heap.isEmpty()) {
+                System.out.println(currentPoint);
             }
         }
 
@@ -98,7 +109,6 @@ public class DistanceEvaluation extends Evaluation {
         else if (Objects.equals(currentPoint, left.superNode())) { neighbours = left.onBoardEdge(); }
         else { neighbours = currentPoint.getNeighbours(boardSize); }
 
-        // If it's not a supernode, check if it has any supernode neighbours
         if (bottom.onBoardEdge().contains(currentPoint)) { neighbours.add(bottom.superNode()); }
         if (right.onBoardEdge().contains(currentPoint)) { neighbours.add(right.superNode()); }
         return neighbours;

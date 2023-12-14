@@ -19,7 +19,7 @@ public record Point(int r, int c) {
 
     // (x-1,y) (x+1,y), (x,y-1), (x,y+1), (x-1,y+1), (x+1,y-1)
     public ArrayList<Point> getNeighbours(int boardSize) {
-        if (r == 11) {
+        if (r == boardSize || c == boardSize) {
             return new ArrayList<>();
         }
         ArrayList<Point> neighbours = new ArrayList<>(
