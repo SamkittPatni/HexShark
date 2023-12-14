@@ -61,27 +61,6 @@ public class DisjointSet {
         return new ArrayList<>(uniqueSets);
     }
 
-    public ArrayList<ArrayList<Integer>> getAllElements() {
-
-        ArrayList<ArrayList<Integer>> allElements = new ArrayList<>();
-
-        for (int key : getAllSets()) {
-            ArrayList<Integer> connectedPoints = new ArrayList<>();
-
-            for (Map.Entry<Integer, Integer> keyValuePair : sets.entrySet()) {
-                if (Objects.equals(key, keyValuePair.getValue())) {
-                    connectedPoints.add(keyValuePair.getKey());
-                }
-            }
-
-            allElements.add(connectedPoints);
-
-        }
-
-        return allElements;
-
-    }
-
     // Checks if a coordinate exists in set
     public boolean hasPoint(Point point) { return sets.containsKey(point.toKey(columns)); }
 

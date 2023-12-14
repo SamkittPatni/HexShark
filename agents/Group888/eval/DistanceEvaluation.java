@@ -13,16 +13,16 @@ public class DistanceEvaluation extends Evaluation {
 
         // Define board boundaries
         this.top = new BoardEdge(new ArrayList<>(), new Point(0, -1));
-        for (int i = 0; i < boardSize; i++) { top.onBoardEdge().add(new Point(i, 0)); }
+        for (int i = 0; i < boardSize; i++) { top.onBoardEdge().add(new Point(0, i)); }
 
         this.bottom = new BoardEdge(new ArrayList<>(), new Point(0, boardSize));
-        for (int i = 0; i < boardSize; i++) { bottom.onBoardEdge().add(new Point(i, boardSize - 1)); }
+        for (int i = 0; i < boardSize; i++) { bottom.onBoardEdge().add(new Point(boardSize - 1, i)); }
 
         this.left = new BoardEdge(new ArrayList<>(), new Point(-1, 0));
-        for (int i = 0; i < boardSize; i++) { left.onBoardEdge().add(new Point(0, i)); }
+        for (int i = 0; i < boardSize; i++) { left.onBoardEdge().add(new Point(i, 0)); }
 
         this.right = new BoardEdge(new ArrayList<>(), new Point(boardSize, 0));
-        for (int i = 0; i < boardSize; i++) { right.onBoardEdge().add(new Point(boardSize - 1, i)); }
+        for (int i = 0; i < boardSize; i++) { right.onBoardEdge().add(new Point(i, boardSize - 1)); }
     }
 
     private int Dijkstra(boolean isMaximising) {
@@ -71,6 +71,7 @@ public class DistanceEvaluation extends Evaluation {
                         }
                     }
                 }
+
                 else {
                     if (!maximising.hasPoint(neighbour)) {
                         if (minimising.hasPoint(neighbour)) {
@@ -107,7 +108,7 @@ public class DistanceEvaluation extends Evaluation {
 
         int costForMaximisingPlayer = Dijkstra(true);
         int costForMinimisingPlayer = Dijkstra(false);
-        return (float) (costForMinimisingPlayer - costForMaximisingPlayer);
+        return (float) (-costForMaximisingPlayer + costForMinimisingPlayer);
     }
 
 //    private Point getLeftmostPoint(ArrayList<Integer> connectedPoints) {

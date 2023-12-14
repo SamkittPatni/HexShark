@@ -31,10 +31,10 @@ public class Evaluation {
      */
     protected Point keyToPoint(int key) {
 
-        int x = key % boardSize;
-        int y = (key - x) / boardSize;
+        int c = key % boardSize;
+        int r = (key - c) / boardSize;
 
-        return new Point(x, y);
+        return new Point(r, c);
     }
 
     /**

@@ -20,17 +20,17 @@ public class BridgeFactorEvaluation extends Evaluation {
     // Obtains all bridges that are valid from a position
     private ArrayList<Point> getBridgesOwnedByPlayer(DisjointSet pointsOwnedByPlayer, Point point) {
 
-        int x = point.x();
-        int y = point.y();
+        int r = point.r();
+        int c = point.c();
 
         ArrayList<Point> bridgePositions = new ArrayList<>(
                 Arrays.asList(
-                        new Point(x + 2, y - 1),
-                        new Point(x + 1, y - 2),
-                        new Point(x + 1, y + 1),
-                        new Point(x - 1, y - 1),
-                        new Point(x - 1, y + 2),
-                        new Point(x - 2, y + 1)
+                        new Point(r + 2, c - 1),
+                        new Point(r + 1, c - 2),
+                        new Point(r + 1, c + 1),
+                        new Point(r - 1, c - 1),
+                        new Point(r - 1, c + 2),
+                        new Point(r - 2, c + 1)
                 )
         );
         

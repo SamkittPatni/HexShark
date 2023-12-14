@@ -159,11 +159,12 @@ public class BestAgent {
         if (depth == 0) {
 
             // Return evaluation score once moves have been played
+//            System.out.println(turn);
             return getEvaluationScore(r, b);
 
         }
 
-        // Check if move is not a special move (that ends the game/swaps)
+        // If the board is full at any depth, return the evaluation
         if (r.size() + b.size() == boardSize * boardSize) { return getEvaluationScore(r, b); }
 
         Point newMove;
@@ -177,7 +178,7 @@ public class BestAgent {
             isFirstMove = false;
 
             // Obtain an evaluation, when the minimizing player makes a swap
-            float score = minimax(depth - 1, false, newMove, r, b, alpha, beta);
+            float score = minimax(depth - 1, true, newMove, r, b, alpha, beta);
             alpha = Math.max(alpha, score);
 
         }
@@ -192,7 +193,7 @@ public class BestAgent {
                     newMove = new Point(i, j);
 
                     // Prune all bad options
-                    if (alpha >= beta) { break; }
+                    if (alpha > beta) { break; }
 
                     // Continue playing the game until correct depth has been met
                     float score = minimax(depth - 1, !isMaximizingPlayer, newMove, r, b, alpha, beta);
@@ -203,7 +204,7 @@ public class BestAgent {
                 }
             }
 
-            if (alpha >= beta) { break; }
+            if (alpha > beta) { break; }
 
         }
 
@@ -256,17 +257,19 @@ public class BestAgent {
 
         // Only called during START, adds all board positions to choices
         if (board.isEmpty()) {
+
             for (int i = 0; i < boardSize; i++) {
                 for (int j = 0; j < boardSize; j++) {
                     choices.add(new Point(i, j));
                 }
             }
+
         }
 
         // If not starting move
         else {
 
-            if (turn == 2) { choices.add(SWAP); }
+            if (turn == 2 && colour.equals("B")) { choices.add(SWAP); }
 
             // Stops us from unnecessary checking of moves
             boolean oppMoveFlag = false;
@@ -376,10 +379,15 @@ public class BestAgent {
             if (colour.equals("R")) { redMoves.add(bestMove); }
             else { blueMoves.add(bestMove); }
 
-            String msg = bestMove.x() + "," + bestMove.y() + "\n";
+            String msg = bestMove.r() + "," + bestMove.c() + "\n";
 
             // If swap is best move, set it to that
             if (Objects.equals(bestMove, SWAP)) { msg = "SWAP\n"; }
+
+//            Point check = new Point(0,1);
+//            for (int i = 0; i < boardSize; i++) {
+//                System.out.println(check.getNeighbours(boardSize).get(i));
+//            }
 
             // Make move
             sendMessage(msg);
@@ -402,8 +410,9 @@ public class BestAgent {
 //        BridgeFactorEvaluation bridgeFactorEvaluation = new BridgeFactorEvaluation(red, blue, boardSize);
 //        CenterEvaluation centerEvaluation = new CenterEvaluation(red, blue, boardSize);
 //        return (bridgeFactorEvaluation.getEvaluation() + centerEvaluation.getEvaluation()) / 2;
-
+//        System.out.println("Here");
         DistanceEvaluation distanceEvaluation = new DistanceEvaluation(red, blue, boardSize);
+//        System.out.println(distanceEvaluation.getEvaluation());
         return distanceEvaluation.getEvaluation();
 
     }
