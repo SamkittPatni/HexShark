@@ -1,18 +1,20 @@
-package eval;
+package agents.Group888.eval;
 
-import dtypes.DisjointSet;
-import dtypes.Point;
+import agents.Group888.dtypes.DisjointSet;
+import agents.Group888.dtypes.Point;
+import static agents.Group888.BestAgent.boardSize;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BridgeFactorEvaluation extends Evaluation {
 
-    public BridgeFactorEvaluation(DisjointSet maximising, DisjointSet minimising, int boardSize) {
-        super(maximising, minimising, boardSize);
+    public BridgeFactorEvaluation(DisjointSet maximising, DisjointSet minimising) {
+        super(maximising, minimising);
     }
 
     // Determines whether a spot is available or not
     private boolean isBridgeOwnedByPlayer(DisjointSet pointsOwnedByPlayer, Point point) {
+
         return point.isValid(0, boardSize) && pointsOwnedByPlayer.hasPoint(point);
 
     }

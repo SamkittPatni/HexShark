@@ -1,8 +1,10 @@
-import dtypes.DisjointSet;
-import dtypes.Point;
-import eval.BridgeFactorEvaluation;
-import eval.CenterEvaluation;
-import eval.DistanceEvaluation;
+package agents.Group888;
+
+import agents.Group888.dtypes.DisjointSet;
+import agents.Group888.dtypes.Point;
+import agents.Group888.eval.BridgeFactorEvaluation;
+import agents.Group888.eval.CenterEvaluation;
+import agents.Group888.eval.DistanceEvaluation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +19,7 @@ public class BestAgent {
 
     public static String HOST = "127.0.0.1";
     public static int PORT = 1234;
+    public static int boardSize = 11;
 
     private Socket s;
     private PrintWriter out;
@@ -24,7 +27,6 @@ public class BestAgent {
 
     private String colour = "R";
     private int turn = 0;
-    private int boardSize = 11;
     private DisjointSet redMoves;
     private DisjointSet blueMoves;
     private boolean isFirstMove;
@@ -165,7 +167,7 @@ public class BestAgent {
         }
 
         // If the board is full at any depth, return the evaluation
-//        if (red.size() + blue.size() == boardSize * boardSize) { return getEvaluationScore(r, b); }
+        if (r.size() + b.size() == boardSize * boardSize) { return getEvaluationScore(r, b); }
 
         Point newMove;
         if (isMaximizingPlayer) { alpha = Integer.MIN_VALUE; }
@@ -176,6 +178,7 @@ public class BestAgent {
 
             newMove = SWAP;
             isFirstMove = false;
+
             // Obtain an evaluation, when the minimizing player makes a swap
             float score = minimax(depth - 1, true, newMove, r, b, alpha, beta);
             alpha = Math.max(alpha, score);
@@ -192,7 +195,7 @@ public class BestAgent {
                     newMove = new Point(i, j);
 
                     // Prune all bad options
-                    if (alpha >= beta) { break; }
+                    if (alpha > beta) { break; }
 
                     // Continue playing the game until correct depth has been met
                     float score = minimax(depth - 1, !isMaximizingPlayer, newMove, r, b, alpha, beta);
@@ -203,7 +206,7 @@ public class BestAgent {
                 }
             }
 
-            if (alpha >= beta) { break; }
+            if (alpha > beta) { break; }
 
         }
 
@@ -321,7 +324,7 @@ public class BestAgent {
         if (!choices.isEmpty()) {
 
             // Sets base best move to random value;
-            Point bestMove = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
+            Point bestMove = SWAP;
             float bestEval;
 
             if (colour.equals("R")) {
@@ -406,15 +409,14 @@ public class BestAgent {
     // TODO: Add more heuristics to this function
     public float getEvaluationScore(DisjointSet red, DisjointSet blue) {
 
-        BridgeFactorEvaluation bridgeFactorEvaluation = new BridgeFactorEvaluation(red, blue, boardSize);
-        CenterEvaluation centerEvaluation = new CenterEvaluation(red, blue, boardSize);
+//        BridgeFactorEvaluation bridgeFactorEvaluation = new BridgeFactorEvaluation(red, blue, boardSize);
+//        CenterEvaluation centerEvaluation = new CenterEvaluation(red, blue, boardSize);
 //        return (bridgeFactorEvaluation.getEvaluation() + centerEvaluation.getEvaluation()) / 2;
 //        System.out.println("Here");
-        DistanceEvaluation distanceEvaluation = new DistanceEvaluation(red, blue, boardSize);
+        DistanceEvaluation distanceEvaluation = new DistanceEvaluation(red, blue);
 //        System.out.println(distanceEvaluation.getEvaluation());
-//        return (float)((bridgeFactorEvaluation.getEvaluation()*0.25) + centerEvaluation.getEvaluation()*0.5) / 3;
-//        return 0;
         return distanceEvaluation.getEvaluation();
+
     }
 }
 

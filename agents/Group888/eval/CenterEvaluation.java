@@ -1,13 +1,12 @@
-package eval;
+package agents.Group888.eval;
 
-import dtypes.DisjointSet;
-import dtypes.Point;
+import agents.Group888.dtypes.DisjointSet;
+import agents.Group888.dtypes.Point;
+import static agents.Group888.BestAgent.boardSize;
 
 public class CenterEvaluation extends Evaluation{
 
-    public CenterEvaluation(DisjointSet maximising, DisjointSet minimising, int boardSize) {
-        super(maximising, minimising, boardSize);
-    }
+    public CenterEvaluation(DisjointSet maximising, DisjointSet minimising) { super(maximising, minimising); }
 
     public float getEvaluation() {
 
@@ -21,7 +20,7 @@ public class CenterEvaluation extends Evaluation{
         }
 
         int neighbourRatio = 0;
-        for (Point neighbour : center.getNeighbours(boardSize)) {
+        for (Point neighbour : center.getNeighbours()) {
             if (maximising.hasPoint(neighbour)) {
                 eval += 1;
                 neighbourRatio += 1;

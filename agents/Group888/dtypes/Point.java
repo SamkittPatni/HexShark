@@ -1,5 +1,6 @@
-package dtypes;
+package agents.Group888.dtypes;
 
+import agents.Group888.BestAgent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -18,8 +19,8 @@ public record Point(int r, int c) {
     }
 
     // (x-1,y) (x+1,y), (x,y-1), (x,y+1), (x-1,y+1), (x+1,y-1)
-    public ArrayList<Point> getNeighbours(int boardSize) {
-        if (r == boardSize || c == boardSize) {
+    public ArrayList<Point> getNeighbours() {
+        if (r == BestAgent.boardSize || c == BestAgent.boardSize) {
             return new ArrayList<>();
         }
         ArrayList<Point> neighbours = new ArrayList<>(
@@ -33,7 +34,7 @@ public record Point(int r, int c) {
                 )
         );
 
-        neighbours.removeIf(neighbour -> !neighbour.isValid(-1, boardSize));
+        neighbours.removeIf(neighbour -> !neighbour.isValid(-1, BestAgent.boardSize));
         return neighbours;
 
     }

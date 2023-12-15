@@ -1,4 +1,4 @@
-package dtypes;
+package agents.Group888.dtypes;
 
 import java.util.*;
 
@@ -87,7 +87,7 @@ public class DisjointSet {
         }
 
         // Check neighbours to determine whether there is a connection
-        ArrayList<Point> neighbours = point.getNeighbours(columns);
+        ArrayList<Point> neighbours = point.getNeighbours();
         for (Point neighbour : neighbours) {
 
             // If there is a connection, combine the sets together

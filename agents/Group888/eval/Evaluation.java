@@ -1,25 +1,24 @@
-package eval;
+package agents.Group888.eval;
 
-import dtypes.DisjointSet;
-import dtypes.Point;
+import agents.Group888.dtypes.DisjointSet;
+import agents.Group888.dtypes.Point;
+
+import static agents.Group888.BestAgent.boardSize;
 
 public class Evaluation {
 
     protected DisjointSet maximising;
     protected DisjointSet minimising;
-    protected int boardSize;
 
     /**
      * Superclass for all evaluation classes
      * @param maximising Disjoint set containing all points controlled by the maximising player
      * @param minimising Disjoint set containing all points controlled by the minimising player
-     * @param boardSize Number of columns on the Hex board
      */
-    protected Evaluation(DisjointSet maximising, DisjointSet minimising, int boardSize) {
+    protected Evaluation(DisjointSet maximising, DisjointSet minimising) {
 
         this.maximising = maximising;
         this.minimising = minimising;
-        this.boardSize = boardSize;
         
     }
 
