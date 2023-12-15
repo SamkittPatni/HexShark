@@ -1,11 +1,9 @@
 package agents.Group888.eval;
-
 import agents.Group888.dtypes.DisjointSet;
 import agents.Group888.dtypes.Point;
+import java.util.*;
 
 import static agents.Group888.BestAgent.boardSize;
-
-import java.util.*;
 
 public class DistanceEvaluation extends Evaluation {
 
@@ -29,13 +27,19 @@ public class DistanceEvaluation extends Evaluation {
 
     }
 
-    public DistanceEvaluation(DisjointSet maximising, DisjointSet minimising) { super(maximising, minimising); }
+    public DistanceEvaluation(DisjointSet maximising, DisjointSet minimising) {
+        super(maximising, minimising);
+        
+    }
 
     private int Dijkstra(boolean isMaximising) {
 
         record Node(int cost, Point point) {}
 
-        PriorityQueue<Node> heap = new PriorityQueue<>(Comparator.comparing(Node::cost));
+        PriorityQueue<Node> heap = new PriorityQueue<>(
+                Comparator.comparing(Node::cost)
+        );
+
         ArrayList<Point> visited = new ArrayList<>();
 
         Point start, end;
@@ -55,9 +59,7 @@ public class DistanceEvaluation extends Evaluation {
             int cost = currentNode.cost();
             Point currentPoint = currentNode.point();
 
-            if (visited.contains(currentPoint)) {
-                continue;
-            }
+            if (visited.contains(currentPoint)) { continue; }
             visited.add(currentPoint);
 
             if (Objects.equals(currentPoint, end)) { return cost; }
@@ -67,7 +69,7 @@ public class DistanceEvaluation extends Evaluation {
             for (Point neighbour : neighbours) {
 
                 if (isMaximising) {
-                    if (!minimising.hasPoint(neighbour) && !Objects.equals(neighbour, end)) {
+                    if (!minimising.hasPoint(neighbour)) {
                         if (maximising.hasPoint(neighbour)) {
                             heap.offer(new Node(cost, neighbour));
                         }
@@ -75,13 +77,10 @@ public class DistanceEvaluation extends Evaluation {
                             heap.offer(new Node(cost + 1, neighbour));
                         }
                     }
-                    if (Objects.equals(neighbour, end)) {
-                        heap.offer(new Node(cost + 1, neighbour));
-                    }
                 }
 
                 else {
-                    if (!maximising.hasPoint(neighbour) && !Objects.equals(neighbour, end)) {
+                    if (!maximising.hasPoint(neighbour)) {
                         if (minimising.hasPoint(neighbour)) {
                             heap.offer(new Node(cost, neighbour));
                         }
@@ -89,13 +88,12 @@ public class DistanceEvaluation extends Evaluation {
                             heap.offer(new Node(cost + 1, neighbour));
                         }
                     }
-                    if (Objects.equals(neighbour, end)) {
-                        heap.offer(new Node(cost + 1, neighbour));
-                    }
                 }
-            }
-            if (heap.isEmpty()) {
-                System.out.println(currentPoint);
+
+                if (Objects.equals(neighbour, end)) {
+                    heap.offer(new Node(cost + 1, neighbour));
+                }
+                
             }
         }
 
@@ -107,15 +105,15 @@ public class DistanceEvaluation extends Evaluation {
 
         ArrayList<Point> neighbours;
 
-        // Check whether a node is a supernode
+        // Check whether a node is a superPoint
         if (Objects.equals(currentPoint, topBoundary.superPoint())) { neighbours = topBoundary.points(); }
         else if (Objects.equals(currentPoint, leftBoundary.superPoint())) { neighbours = leftBoundary.points(); }
         else { neighbours = currentPoint.getNeighbours(); }
 
+        // If it's not a superPoint, check if it has any superPoint neighbours
         if (bottomBoundary.points().contains(currentPoint)) { neighbours.add(bottomBoundary.superPoint()); }
         if (rightBoundary.points().contains(currentPoint)) { neighbours.add(rightBoundary.superPoint()); }
         return neighbours;
-
     }
 
     public float getEvaluation() {
@@ -123,7 +121,6 @@ public class DistanceEvaluation extends Evaluation {
         int costForMaximisingPlayer = Dijkstra(true);
         int costForMinimisingPlayer = Dijkstra(false);
         return (float) (-costForMaximisingPlayer + costForMinimisingPlayer);
-
     }
 
 }
